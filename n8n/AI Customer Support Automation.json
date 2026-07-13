@@ -1,0 +1,225 @@
+{
+  "name": "AI Customer Support Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ticket-created",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        -96
+      ],
+      "id": "66d02e1b-a492-4b48-806f-68074da35ee5",
+      "name": "Webhook",
+      "webhookId": "494256f6-561a-44fc-bc57-feffb307976c"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Webhook received successfully\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "d23212c5-90e2-4026-8f37-10c62187da0d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sendTo": "muhammadovais314@gmail.com",
+        "subject": "=New Support Ticket #{{ $json['Ticket ID'] }}",
+        "emailType": "text",
+        "message": "=A new support ticket has been created.\n\nTicket ID:\n{{ $json['Ticket ID'] }}\n\nQuestion:\n{{ $json.Question }}\n\nPriority:\n{{ $json.Priority }}\n\nStatus:\n{{ $json.Status }}\n\nSession:\n{{ $json['Session ID'] }}\n\nCreated At:\n{{ $json['Created At'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        -96
+      ],
+      "id": "8e329cb2-b4e0-4e75-afaa-0eef3e837597",
+      "name": "Send a message",
+      "webhookId": "3e06e22a-000d-4c07-9bd6-112d9bac7a42",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ml0wca4F7Pgx6D67",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ZjkVTGlx6hbzYFKt0oKzU5pxDyOqy9HOmJsWQ02ITws",
+          "mode": "list",
+          "cachedResultName": "AI Customer Support Tickets",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZjkVTGlx6hbzYFKt0oKzU5pxDyOqy9HOmJsWQ02ITws/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZjkVTGlx6hbzYFKt0oKzU5pxDyOqy9HOmJsWQ02ITws/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticket ID": "={{ $json.body.ticket_id }}",
+            "Question": "={{ $json.body.question }}",
+            "Priority": "={{ $json.body.priority }}",
+            "Status": "={{ $json.body.status }}",
+            "Session ID": "={{ $json.body.session_id }}",
+            "Created At": "={{$json.body.created_at}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ticket ID",
+              "displayName": "Ticket ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Question",
+              "displayName": "Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Session ID",
+              "displayName": "Session ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -208,
+        -96
+      ],
+      "id": "892c132e-13ad-4ddd-9f46-589d213c5594",
+      "name": "Append row in sheet",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5Qgoxi3C0KfX7vDe",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "90ed31bd-0b0b-4aa5-90cf-af1c8c841b0e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8db141ddc30d14ea322fa1d1201da82bdfd03ab96f05b32be6c30dd8868f2f3f"
+  },
+  "nodeGroups": [],
+  "id": "DYNmKIuNRQQaLzi0",
+  "tags": []
+}
